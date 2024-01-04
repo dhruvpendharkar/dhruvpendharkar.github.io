@@ -1,1 +1,1 @@
-# Hi
+#### I'm a freshman at Berkeley majoring in data science and mathematics. In the past, I've interned with Sandbox Semiconductor where I helped implement Neural Style Transfer for artificial image data generation. I currently work under Dr. Adam Anderson where I am looking into the uses of R-CNN frameworks to identify Sumerian texts. My current research interests lie broadly in computer vision and reinforcement learning. I am always interested in new opportunities to feel free to reach out!
