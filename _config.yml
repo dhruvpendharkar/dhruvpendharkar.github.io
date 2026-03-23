@@ -1,4 +1,4 @@
-title: Researcher
+title: Dhruv Pendharkar
 url: "https://dhruvpendharkar.github.io"
 baseurl: ""
 
@@ -16,6 +16,6 @@ sass:
 
 nav:
  - name: "About"
-   link: "/researcher/"
+   link: "/"
  - name: "Writing"
    link: "writing"
