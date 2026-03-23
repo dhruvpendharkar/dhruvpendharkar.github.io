@@ -4,7 +4,7 @@ layout: default
 
 ## About Me
 
-<img class="profile-picture" src="sherlock.jpg">
+<img class="profile-picture" src="IMG_0246.jpg">
 
 hi i'm dhruv, a third year undergraduate student at uc berkeley. i am an undergraduate researcher in trevor darrell's group withing berkeley artificial intelligence research lab (bair). my current work lies in inference aligned training for visual reasoning as well as post-training for web agents. previously i have been fortunate to work on recommendation systems at sephora and ml for visual neuroscience as part of the active vision and neural computation lab at berkeley.
 
