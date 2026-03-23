@@ -6,40 +6,18 @@ layout: default
 
 <img class="profile-picture" src="sherlock.jpg">
 
-Hi! I am a junior year student of B.E. Computer Science at Birla Institute of Technology and Science, Pilani.
+hi i'm dhruv, a third year undergraduate student at uc berkeley. i am an undergraduate researcher in trevor darrell's group withing berkeley artificial intelligence research lab (bair). my current work lies in inference aligned training for visual reasoning as well as post-training for web agents. previously i have been fortunate to work on recommendation systems at sephora and ml for visual neuroscience as part of the active vision and neural computation lab at berkeley.
 
-This is a jekyll based resume template. You can find the full source code on [GitHub](https://github.com/bk2dcradle/researcher)
+outside of machine learning i enjoy weightlifting, writing, djing, and basketball.
 
-## Research Interest
+## Research Interests
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam finibus ipsum ac erat aliquam dapibus. Vestibulum vehicula placerat ex, a consectetur odio pharetra quis. Mauris id urna ante. Fusce pharetra diam ac nisi aliquet, vel egestas ex iaculis. Pellentesque laoreet cursus tellus sed pellentesque. Praesent a rhoncus elit. Nunc ipsum nisl, consequat sit amet pretium quis, gravida id ipsum.
+my interests tend to change over time but i am currently most excited about improving visual reasoning capabilities in vlms and developing causal approaches for interpreting language models
 
-## Publications
+## Contact Information
 
-1. F.Bar, J.Doe: Effects of having a placeholder of a name
-2. S.Holmes, J.Watson: Consequences of living with a sociopath in London
-
-## Typography
-
-This is a [link](http://google.com). Something *italics* and something **bold**.
-
-Here is a table
-
-Year | Award | Category
------|-------|--------
-2014 | Emmy  | Won Outstanding Lead Actor in a miniseries or a movie
-2015 | BAFTA | Nominated for Best Leading Actor for Sherlock
-2014 | Satellite | Won Best Actor miniseries or television film
-
-Here is a horizontal rule
+you can reach me at dhruvpendharkar@berkeley.edu
 
 ---
 
-Here is a blockquote
-
-> To a great mind, nothing is little
-
-## References
-
-* Foo Bar: Head of Department, Placeholder Names, Lorem
-* John Doe: Associate Professor, Department of Computer Science, Ipsum
+> forsan et haec olim meminisse iuvabit
