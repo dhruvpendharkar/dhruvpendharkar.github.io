@@ -18,4 +18,4 @@ nav:
  - name: "About"
    link: "/"
  - name: "Writing"
-   link: "writing"
+   link: "/writing"
