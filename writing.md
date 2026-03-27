@@ -3,7 +3,12 @@ layout: default
 is_writing: true
 ---
 
-
 ## Writing
 
-posts on the way but if you would like to view my previous work on my substack you can [here](https://thestateoftheunion.substack.com)
+{% for post in site.posts %}
+{{ post.date | date: "%Y-%m-%d" }} — [{{ post.title }}]({{ post.url }})
+{% endfor %}
+
+---
+
+Older writing on my [Substack](https://thestateoftheunion.substack.com).
