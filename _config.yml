@@ -3,6 +3,8 @@ url: "https://dhruvpendharkar.github.io"
 baseurl: ""
 
 markdown: kramdown
+kramdown:
+  math_engine: null
 
 tracking_id: #
 
