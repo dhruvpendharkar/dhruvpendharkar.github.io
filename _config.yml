@@ -4,7 +4,7 @@ baseurl: ""
 
 markdown: kramdown
 kramdown:
-  math_engine: null
+  math_engine: mathjax
 
 tracking_id: #
 
