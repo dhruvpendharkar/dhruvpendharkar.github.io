@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" data-viz-id="kv-footprint">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KV-cache footprint: standard attention vs MLA</title>
+<style>
+:root{--paper:#f5f6f2;--ink:#191c18;--muted:#5c6058;--hair:#d8dad1;--card:#fff;--a:#0f8a80;--b:#3b3486;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}@media(prefers-color-scheme:dark){:root{--paper:#14150f;--ink:#e7e7de;--muted:#9a9c90;--hair:#2c2e26;--card:#1c1d16}}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink)}main{max-width:760px;margin:auto;padding:28px 20px 38px}.eyebrow{margin:0;color:var(--a);font:700 12px ui-monospace,monospace;letter-spacing:.12em}.lede{margin:6px 0 22px;color:var(--muted);line-height:1.55}h1{margin:0;font-size:25px}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0}.control{border:1px solid var(--hair);border-radius:12px;padding:13px;background:var(--card)}label{display:flex;justify-content:space-between;font-size:13px;font-weight:650;gap:8px}output{font-family:ui-monospace,monospace;color:var(--a)}input{width:100%;accent-color:var(--a);margin-top:12px}.chart{border:1px solid var(--hair);border-radius:14px;padding:20px;background:var(--card)}.row{margin:14px 0 20px}.top{display:flex;justify-content:space-between;gap:12px;font-size:14px}.value{font:700 15px ui-monospace,monospace}.track{height:34px;margin-top:8px;background:color-mix(in srgb,var(--ink) 7%,transparent);border-radius:7px;overflow:hidden}.bar{height:100%;border-radius:7px;min-width:4px}.standard{background:var(--b)}.mla{background:var(--a)}.takeaway{border-top:1px solid var(--hair);margin-top:22px;padding-top:16px;color:var(--muted);line-height:1.5}.takeaway strong{color:var(--ink)}@media(max-width:540px){.controls{grid-template-columns:1fr}.top{align-items:baseline}}
+</style>
+</head>
+<body><main>
+<p class="eyebrow">GATED MULTI-HEAD LATENT ATTENTION</p><h1>Per-token KV-cache footprint</h1><p class="lede">Adjust a representative attention configuration. Standard multi-head attention caches keys and values for every head; MLA caches one compact KV latent.</p>
+<section class="controls" aria-label="Attention dimensions">
+<div class="control"><label for="heads">Heads <output id="headsOut">32</output></label><input id="heads" type="range" min="8" max="128" step="8" value="32"></div>
+<div class="control"><label for="dim">Head dimension <output id="dimOut">128</output></label><input id="dim" type="range" min="32" max="256" step="32" value="128"></div>
+<div class="control"><label for="latent">KV latent dimension <output id="latentOut">512</output></label><input id="latent" type="range" min="128" max="2048" step="128" value="512"></div>
+</section>
+<section class="chart" aria-live="polite"><div class="row"><div class="top"><span>Standard MHA: <code>2 nₕ dₕ</code></span><span class="value" id="standardValue"></span></div><div class="track"><div class="bar standard" id="standardBar"></div></div></div><div class="row"><div class="top"><span>MLA: <code>d_c</code></span><span class="value" id="mlaValue"></span></div><div class="track"><div class="bar mla" id="mlaBar"></div></div></div><p class="takeaway" id="takeaway"></p></section>
+</main><script>
+const ids=['heads','dim','latent'];const by=id=>document.getElementById(id);function fmt(x){return x.toLocaleString()+' scalars/token'}function draw(){const h=+by('heads').value,d=+by('dim').value,c=+by('latent').value,s=2*h*d,r=s/c;by('headsOut').value=h;by('dimOut').value=d;by('latentOut').value=c;by('standardValue').textContent=fmt(s);by('mlaValue').textContent=fmt(c);by('standardBar').style.width='100%';by('mlaBar').style.width=Math.max(2,100/r)+'%';by('takeaway').innerHTML='<strong>'+r.toFixed(1)+'× smaller per token.</strong> MLA stores the '+c.toLocaleString()+'-dimension KV latent, rather than separate key and value vectors for all '+h+' heads.'}ids.forEach(id=>by(id).addEventListener('input',draw));draw();
+</script><script>const postH=()=>parent.postMessage({vizId:document.documentElement.dataset.vizId||'viz',vizHeight:document.body.scrollHeight},'*');addEventListener('load',postH);new ResizeObserver(postH).observe(document.body);</script></body>
+</html>

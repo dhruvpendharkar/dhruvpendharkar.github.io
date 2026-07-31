@@ -52,6 +52,13 @@
     {% else %}
         <meta name="twitter:image" content="{{ site.profile_picture }}">
     {% endif %}
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 </head>
 <body>
     <div class="wrapper">
@@ -100,6 +107,17 @@
           ga('send', 'pageview');
         </script>
     {% endif %}
+    <script>
+      addEventListener('message', (e) => {
+        if (e.data && e.data.vizHeight) {
+          document.querySelectorAll('iframe.viz-frame').forEach((frame) => {
+            if (!e.data.vizId || frame.dataset.viz === e.data.vizId) {
+              frame.style.height = e.data.vizHeight + 'px';
+            }
+          });
+        }
+      });
+    </script>
 </body>
 <footer>
 </footer>

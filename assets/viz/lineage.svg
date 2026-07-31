@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 430" role="img" aria-labelledby="lineage-title lineage-desc">
+  <title id="lineage-title">Attention-variant lineage converging in Kimi K3</title>
+  <desc id="lineage-desc">A linear-attention track culminates in Kimi Delta Attention, while a latent-attention track culminates in Gated MLA. Both mix in a three-to-one ratio in Kimi K3.</desc>
+  <style>
+    .lineage{color:currentColor;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.lineage .card{fill:Canvas;stroke:currentColor;stroke-opacity:.32;stroke-width:1.5}.lineage .muted{fill:currentColor;fill-opacity:.62}.lineage .label{fill:currentColor;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.lineage .name{fill:currentColor;font-size:18px;font-weight:700}.lineage .detail{fill:currentColor;font-size:14px;fill-opacity:.74}.lineage .path{fill:none;stroke:currentColor;stroke-opacity:.5;stroke-width:2.5}.lineage .accent-a{fill:#0F8A80}.lineage .accent-b{fill:#3B3486}.lineage .accent-c{fill:#E0912B}.lineage .arrow{fill:currentColor;fill-opacity:.5}
+  </style>
+  <g class="lineage">
+    <text x="30" y="38" class="label">Two attention tracks</text>
+    <text x="30" y="64" class="detail">Different ways to make long-context attention efficient</text>
+    <text x="30" y="116" class="label" fill="#0F8A80">Linear / recurrent track</text>
+    <rect class="card" x="30" y="136" width="175" height="90" rx="12"/>
+    <circle class="accent-a" cx="54" cy="161" r="7"/><text class="name" x="70" y="168">Kimi Linear</text><text class="detail" x="54" y="197">recurrent state</text><text class="detail" x="54" y="216">linear in sequence length</text>
+    <path class="path" d="M205 181H281"/><path class="arrow" d="M281 181l-10-6v12z"/>
+    <rect class="card" x="300" y="136" width="215" height="90" rx="12"/>
+    <circle class="accent-a" cx="324" cy="161" r="7"/><text class="name" x="340" y="168">KDA</text><text class="detail" x="324" y="197">delta-rule memory updates</text><text class="detail" x="324" y="216">bounded channel decay</text>
+    <text x="30" y="286" class="label" fill="#3B3486">Latent / global track</text>
+    <rect class="card" x="30" y="306" width="175" height="90" rx="12"/>
+    <circle class="accent-b" cx="54" cy="331" r="7"/><text class="name" x="70" y="338">DeepSeek MLA</text><text class="detail" x="54" y="367">compressed KV latent</text><text class="detail" x="54" y="386">global attention</text>
+    <path class="path" d="M205 351H281"/><path class="arrow" d="M281 351l-10-6v12z"/>
+    <rect class="card" x="300" y="306" width="215" height="90" rx="12"/>
+    <circle class="accent-b" cx="324" cy="331" r="7"/><text class="name" x="340" y="338">Gated MLA</text><text class="detail" x="324" y="367">latent KV compression</text><text class="detail" x="324" y="386">input-dependent output gate</text>
+    <path class="path" d="M515 181C567 181 556 216 600 216"/><path class="path" d="M515 351C567 351 556 296 600 296"/>
+    <rect class="card" x="600" y="185" width="230" height="142" rx="16" stroke="#E0912B" stroke-width="2"/>
+    <circle class="accent-c" cx="626" cy="214" r="8"/><text class="name" x="644" y="221">Kimi K3</text>
+    <text class="detail" x="626" y="253">hybrid attention recipe</text><text class="detail" x="626" y="278">3 × KDA : 1 × Gated MLA</text>
+    <line x1="626" y1="293" x2="804" y2="293" stroke="currentColor" stroke-opacity=".2"/><text class="detail" x="626" y="315">plus attention residuals</text>
+  </g>
+</svg>

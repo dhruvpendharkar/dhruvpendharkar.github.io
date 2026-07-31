@@ -72,6 +72,33 @@ hr {
     min-height: 100%;
 }
 
+/* Embedded visualizations */
+.viz {
+    margin: 2rem 0;
+}
+.viz-frame {
+    display: block;
+    width: 100%;
+    border: 0;
+}
+.viz > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.viz figcaption {
+    font-size: 0.9rem;
+    opacity: 0.75;
+    margin-top: 0.5rem;
+}
+.viz-pending {
+    border: 1px dashed currentColor;
+    border-radius: 8px;
+    padding: 1.5rem;
+    opacity: 0.6;
+    text-align: center;
+}
+
 /* Institute Image */
 
 #ins-logo {

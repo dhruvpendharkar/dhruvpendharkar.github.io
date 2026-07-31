@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" data-viz-id="kda-memory">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KDA: the state is an editable memory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cell:34px; --gap:4px;
+    --paper:#F5F6F2; --ink:#191C18; --muted:#5C6058; --hair:#D8DAD1;
+    --card:#FFFFFF; --teal:#0F8A80; --amber:#E0912B; --indigo:#3B3486;
+    --neutral:#EDEBE3;
+    --sans:"Space Grotesk", system-ui, -apple-system, sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#14150F; --ink:#E7E7DE; --muted:#9A9C90; --hair:#2C2E26;
+      --card:#1C1D16; --neutral:#25251F;
+    }
+  }
+  @media (max-width:440px){ :root{ --cell:26px; } }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:32px 20px 48px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);margin:0 0 8px;}
+  h1{font-size:26px;font-weight:600;margin:0 0 6px;letter-spacing:-.01em;}
+  .lede{font-size:15px;color:var(--muted);margin:0 0 26px;max-width:60ch;}
+  .lede code{font-family:var(--mono);font-size:.92em;color:var(--ink);}
+  .panel{background:var(--card);border:1px solid var(--hair);border-radius:14px;padding:22px;}
+  .stage{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;}
+  .board{display:grid;
+    grid-template-columns:20px 20px calc(var(--cell)*8 + var(--gap)*7);
+    grid-template-rows:20px calc(var(--cell)*8 + var(--gap)*7);
+    gap:8px;}
+  .corner{grid-column:1/3;grid-row:1;}
+  .vstrip{grid-column:3;grid-row:1;display:grid;
+    grid-template-columns:repeat(8,var(--cell));gap:var(--gap);}
+  .kstrip{grid-column:1;grid-row:2;}
+  .astrip{grid-column:2;grid-row:2;}
+  .kstrip,.astrip{display:grid;grid-template-rows:repeat(8,var(--cell));gap:var(--gap);width:20px;}
+  .matrix{grid-column:3;grid-row:2;display:grid;
+    grid-template-columns:repeat(8,var(--cell));grid-auto-rows:var(--cell);gap:var(--gap);}
+  .c{border-radius:3px;background:var(--neutral);}
+  .vstrip .c,.kstrip .c,.astrip .c{border-radius:2px;}
+  @media (prefers-reduced-motion: no-preference){
+    .matrix .c{transition:background-color .45s ease;}
+    .vstrip .c,.kstrip .c,.astrip .c{transition:background-color .3s ease, box-shadow .3s ease;}
+  }
+  .lit{box-shadow:0 0 0 2px var(--teal);}
+  .axlabel{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.03em;}
+  .axtop{grid-column:3;grid-row:1;align-self:end;justify-self:start;margin-bottom:2px;}
+  .side{flex:1;min-width:240px;}
+  .track{display:flex;gap:6px;margin:0 0 16px;flex-wrap:wrap;}
+  .tok{font-family:var(--mono);font-size:12px;padding:4px 9px;border:1px solid var(--hair);
+    border-radius:20px;color:var(--muted);}
+  .tok.on{border-color:var(--teal);color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent);}
+  .phases{display:flex;gap:6px;margin:0 0 14px;}
+  .ph{flex:1;text-align:center;font-family:var(--mono);font-size:11px;padding:7px 4px;
+    border:1px solid var(--hair);border-radius:8px;color:var(--muted);letter-spacing:.02em;}
+  .ph.on{border-color:var(--ink);color:var(--ink);background:var(--neutral);}
+  .caption{min-height:70px;font-size:14px;margin:0 0 16px;}
+  .caption b{font-weight:600;}
+  .caption .eq{font-family:var(--mono);font-size:13.5px;color:var(--teal);display:block;margin-bottom:4px;}
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+  button{font-family:var(--sans);font-size:13.5px;font-weight:500;padding:8px 16px;border-radius:8px;
+    border:1px solid var(--hair);background:var(--card);color:var(--ink);cursor:pointer;}
+  button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+  button:hover{border-color:var(--teal);}
+  button:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+  button:disabled{opacity:.4;cursor:default;}
+  .readout{margin-top:22px;border-top:1px solid var(--hair);padding-top:18px;}
+  .rorow{display:flex;align-items:center;gap:12px;margin:6px 0;}
+  .rolabel{font-family:var(--mono);font-size:11px;color:var(--muted);width:118px;flex:none;}
+  .robars{display:grid;grid-template-columns:repeat(8,1fr);gap:var(--gap);flex:1;max-width:300px;}
+  .robars .c{height:16px;border-radius:2px;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-family:var(--mono);
+    font-size:10.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .sw{width:34px;height:11px;border-radius:2px;display:inline-block;}
+  .divg{background:linear-gradient(90deg,var(--indigo),var(--neutral),var(--amber));}
+  .swteal{background:linear-gradient(90deg,var(--neutral),var(--teal));}
+  .swamb{background:linear-gradient(90deg,var(--neutral),var(--amber));}
+  .foot{font-size:12.5px;color:var(--muted);margin-top:20px;}
+  .foot code{font-family:var(--mono);color:var(--ink);font-size:.92em;}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Kimi Delta Attention</p>
+  <h1>The state is an editable memory</h1>
+  <p class="lede">KDA replaces the growing KV cache with one fixed-size matrix <code>S</code> &mdash; an associative memory of size <code>d_k&times;d_v</code>. Every token edits it in three moves: <b>forget</b> the old contents channel-by-channel, <b>delete</b> whatever value the current key already points to, then <b>write</b> the new binding. Step through one sequence and watch the memory take shape.</p>
+
+  <p class="sr">An 8 by 8 heatmap shows the recurrent state matrix. Controls step through five tokens; each token applies a forget, delete, write, and read phase to the state.</p>
+
+  <div class="panel">
+    <div class="track" id="track" aria-hidden="true"></div>
+
+    <div class="stage">
+      <div class="board" aria-hidden="true">
+        <div class="corner"></div>
+        <div class="vstrip" id="vstrip"></div>
+        <div class="kstrip" id="kstrip"></div>
+        <div class="astrip" id="astrip"></div>
+        <div class="matrix" id="matrix"></div>
+      </div>
+
+      <div class="side">
+        <div class="phases" id="phases">
+          <div class="ph" data-p="0">forget</div>
+          <div class="ph" data-p="1">delete</div>
+          <div class="ph" data-p="2">write</div>
+          <div class="ph" data-p="3">read</div>
+        </div>
+        <div class="caption" id="caption">
+          <span class="eq">S &larr; 0</span>
+          <b>Empty memory.</b> Press Step to process the first token.
+        </div>
+        <div class="controls">
+          <button class="primary" id="step">Step</button>
+          <button id="auto">Auto</button>
+          <button id="reset">Reset</button>
+        </div>
+
+        <div class="readout">
+          <div class="rorow">
+            <span class="rolabel">õ = S<sup>&#8868;</sup>q&nbsp;&nbsp;(q = k)</span>
+            <div class="robars" id="ro-o" aria-hidden="true"></div>
+          </div>
+          <div class="rorow">
+            <span class="rolabel">v&nbsp;&nbsp;value written</span>
+            <div class="robars" id="ro-v" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend" aria-hidden="true">
+      <span><span class="sw divg"></span>state value (&minus; / +)</span>
+      <span><span class="sw swteal"></span>&alpha; retention (col 2)</span>
+      <span><span class="sw swamb"></span>k / v magnitude (col 1, top row)</span>
+    </div>
+  </div>
+
+  <p class="foot">The three key channels of token 3 overlap token 1's, so watch the <b>delete</b> step scrub token 1's stored value before token 3 writes its own &mdash; that overwrite is the delta rule earning its keep. In the real model <code>&alpha;</code> and <code>&beta;</code> are produced per token from the input; here <code>&alpha;</code> is held fixed so the channel-wise decay (rows 7&ndash;8 fade fastest) stays legible.</p>
+</div>
+
+<script>
+const D = 8;
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+const NEUTRAL = dark ? [37,37,31] : [237,235,227];
+const AMBER=[224,145,43], INDIGO=[59,52,134], TEAL=[15,138,128];
+const SCALE = 1.15;
+
+const tokens = [
+  {k:[0.90,0.40,0.15,0.05,0,0,0,0], v:[0,0,0,0,0.90,0.70,0.30,0.10], beta:0.90},
+  {k:[0,0,0.85,0.50,0.15,0,0,0],    v:[0.80,0.50,0.15,0,0,0,0,0.20], beta:0.85},
+  {k:[0.88,0.42,0.12,0,0,0,0,0],    v:[0,0,0.90,0.50,0,0,0,0],       beta:0.92},
+  {k:[0,0,0,0,0.85,0.50,0.20,0],    v:[0,0.30,0.70,0.60,0,0,0,0],    beta:0.88},
+  {k:[0,0,0,0,0,0,0.60,0.85],       v:[0,0,0,0,0.20,0.40,0.70,0.60], beta:0.90},
+];
+const alpha = [0.97,0.97,0.96,0.96,0.95,0.95,0.82,0.82];
+tokens.forEach(t=>{ const n = Math.hypot(...t.k) || 1; t.k = t.k.map(x=>x/n); });
+
+let S, ti, ph, done, started=false, timer=null, lastRead=null;
+
+function zeros(){ return Array.from({length:D}, ()=>new Array(D).fill(0)); }
+function lerp(a,b,t){ return a+(b-a)*t; }
+function mix(c1,c2,t){ return `rgb(${Math.round(lerp(c1[0],c2[0],t))},${Math.round(lerp(c1[1],c2[1],t))},${Math.round(lerp(c1[2],c2[2],t))})`; }
+function heat(v){ const t=Math.max(-1,Math.min(1,v/SCALE)); return t>=0 ? mix(NEUTRAL,AMBER,t) : mix(NEUTRAL,INDIGO,-t); }
+function mono(v,c,max){ const t=Math.max(0,Math.min(1,v/max)); return mix(NEUTRAL,c,t); }
+function retColor(a){ const t=Math.max(0,Math.min(1,(a-0.75)/0.25)); return mix(NEUTRAL,TEAL,t); }
+
+const $ = s => document.querySelector(s);
+const matrix=$('#matrix'), vstrip=$('#vstrip'), kstrip=$('#kstrip'), astrip=$('#astrip');
+const roO=$('#ro-o'), roV=$('#ro-v'), track=$('#track');
+
+const mCells=[], vCells=[], kCells=[], aCells=[], oCells=[], rvCells=[];
+for(let i=0;i<D;i++){ for(let j=0;j<D;j++){ const d=document.createElement('div'); d.className='c'; matrix.appendChild(d); mCells.push(d); } }
+function strip(parent, arr){ for(let i=0;i<D;i++){ const d=document.createElement('div'); d.className='c'; parent.appendChild(d); arr.push(d); } }
+strip(vstrip,vCells); strip(kstrip,kCells); strip(astrip,aCells);
+strip(roO,oCells); strip(roV,rvCells);
+for(let t=0;t<tokens.length;t++){ const p=document.createElement('div'); p.className='tok'; p.textContent='t'+(t+1); track.appendChild(p); }
+const tokEls=[...track.children], phEls=[...document.querySelectorAll('.ph')];
+
+function renderMatrix(){ for(let i=0;i<D;i++) for(let j=0;j<D;j++) mCells[i*D+j].style.background=heat(S[i][j]); }
+function renderToken(){
+  const on = started && !done && ti < tokens.length;
+  const t = tokens[Math.min(ti,tokens.length-1)];
+  for(let i=0;i<D;i++){
+    kCells[i].style.background = mono(Math.abs(t.k[i]),AMBER,1);
+    aCells[i].style.background = retColor(alpha[i]);
+    vCells[i].style.background = mono(t.v[i],AMBER,1);
+  }
+  tokEls.forEach((e,idx)=>e.classList.toggle('on', on && idx===ti));
+  kCells.forEach(e=>e.classList.toggle('lit', on && (ph===1||ph===2)));
+  aCells.forEach(e=>e.classList.toggle('lit', on && ph===0));
+  vCells.forEach(e=>e.classList.toggle('lit', on && ph===2));
+  phEls.forEach(e=>e.classList.toggle('on', on && (+e.dataset.p)===ph));
+}
+function renderReadout(){
+  const o = lastRead ? lastRead.o : new Array(D).fill(0);
+  const v = lastRead ? lastRead.v : new Array(D).fill(0);
+  for(let j=0;j<D;j++){ oCells[j].style.background=mono(o[j],AMBER,1); rvCells[j].style.background=mono(v[j],AMBER,1); }
+}
+
+const captions = [
+  {eq:'S ← Diag(α) · S', html:'<b>Forget.</b> Each key-channel (row) is scaled by its retention α. Channels near 1 keep their memories; the fast-decay channels (rows 7–8) shed theirs almost immediately.'},
+  {eq:'S ← S − β · k (kᵀS)', html:'<b>Delete.</b> The delta rule reads what the current key already points to and erases a β-fraction of it. No blind accumulation — the key\'s old value is cleared before the new one lands.'},
+  {eq:'S ← S + β · k · vᵀ', html:'<b>Write.</b> A rank-1 outer product binds this value to this key. Cells light up exactly where the key channel (col 1) and value channel (top row) are both active.'},
+  {eq:'õ = Sᵀ · q   (q = k)', html:'<b>Read.</b> Querying the memory with the key returns the bound value. Compare õ against v below — near matches mean the write stuck; drift means another key is competing for the same channels.'},
+];
+
+function apply(){
+  const t = tokens[ti];
+  if(ph===0){ for(let i=0;i<D;i++) for(let j=0;j<D;j++) S[i][j]*=alpha[i]; }
+  else if(ph===1){ const kts=new Array(D).fill(0);
+    for(let j=0;j<D;j++){ let s=0; for(let i=0;i<D;i++) s+=t.k[i]*S[i][j]; kts[j]=s; }
+    for(let i=0;i<D;i++) for(let j=0;j<D;j++) S[i][j]-=t.beta*t.k[i]*kts[j]; }
+  else if(ph===2){ for(let i=0;i<D;i++) for(let j=0;j<D;j++) S[i][j]+=t.beta*t.k[i]*t.v[j]; }
+  else if(ph===3){ const o=new Array(D).fill(0);
+    for(let j=0;j<D;j++){ let s=0; for(let i=0;i<D;i++) s+=S[i][j]*t.k[i]; o[j]=s; }
+    lastRead={o, v:t.v.slice(), ti}; }
+}
+
+function setCaption(){
+  const c = captions[ph];
+  $('#caption').innerHTML = `<span class="eq">${c.eq}</span>${c.html} <span style="color:var(--muted)">(token ${ti+1})</span>`;
+}
+
+function step(){
+  if(done) return;
+  started=true;
+  apply();
+  setCaption();
+  renderMatrix(); renderToken(); renderReadout();
+  if(ph<3){ ph++; }
+  else { ph=0; ti++; if(ti>=tokens.length){ done=true; finish(); } }
+  $('#step').disabled = done;
+}
+function finish(){
+  ti=tokens.length-1;
+  stopAuto();
+  $('#caption').innerHTML = `<span class="eq">S = S₅</span><b>Sequence complete.</b> One fixed-size matrix now holds all five bindings — no cache that grew with length. Reset to replay.`;
+  phEls.forEach(e=>e.classList.remove('on'));
+  tokEls.forEach(e=>e.classList.remove('on'));
+  kCells.concat(aCells,vCells).forEach(e=>e.classList.remove('lit'));
+}
+function reset(){
+  stopAuto(); S=zeros(); ti=0; ph=0; done=false; started=false; lastRead=null;
+  $('#step').disabled=false;
+  $('#caption').innerHTML = `<span class="eq">S ← 0</span><b>Empty memory.</b> Press Step to process the first token.`;
+  renderMatrix(); renderToken(); renderReadout();
+  phEls.forEach(e=>e.classList.remove('on'));
+}
+function startAuto(){ if(timer||done) return; $('#auto').textContent='Pause'; timer=setInterval(()=>{ step(); if(done) stopAuto(); }, 1050); }
+function stopAuto(){ if(timer){ clearInterval(timer); timer=null; } $('#auto').textContent='Auto'; }
+
+$('#step').addEventListener('click', ()=>{ stopAuto(); step(); });
+$('#auto').addEventListener('click', ()=>{ timer ? stopAuto() : startAuto(); });
+$('#reset').addEventListener('click', reset);
+document.addEventListener('keydown', e=>{
+  if(e.key===' '||e.key==='ArrowRight'){ e.preventDefault(); stopAuto(); step(); }
+  else if(e.key.toLowerCase()==='r'){ reset(); }
+});
+
+reset();
+</script>
+<script>
+  const postH = () => parent.postMessage(
+    { vizId: document.documentElement.dataset.vizId || 'viz', vizHeight: document.body.scrollHeight }, '*');
+  addEventListener('load', postH);
+  new ResizeObserver(postH).observe(document.body);
+</script>
+</body>
+</html>

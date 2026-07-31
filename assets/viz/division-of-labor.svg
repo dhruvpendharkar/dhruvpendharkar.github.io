@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 450" role="img" aria-labelledby="labor-title labor-desc">
+  <title id="labor-title">Kimi K3 attention division of labor</title>
+  <desc id="labor-desc">KDA maintains a recurrent associative memory of where and when information occurred, while Gated MLA uses a compressed global KV cache to retrieve what information is relevant. Their outputs are gated and combined in Kimi K3.</desc>
+  <style>
+    .labor{color:currentColor;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.labor .card{fill:Canvas;stroke:currentColor;stroke-opacity:.28;stroke-width:1.5}.labor .label{fill:currentColor;font-size:14px;font-weight:700;letter-spacing:.08em}.labor .name{fill:currentColor;font-size:22px;font-weight:750}.labor .body{fill:currentColor;font-size:15px;fill-opacity:.76}.labor .math{fill:currentColor;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14px}.labor .wire{fill:none;stroke:currentColor;stroke-opacity:.45;stroke-width:2.5}.labor .teal{fill:#0F8A80}.labor .indigo{fill:#3B3486}.labor .amber{fill:#E0912B}.labor .pill{fill:currentColor;fill-opacity:.08}.labor .pilltext{fill:currentColor;font-size:13px;font-weight:700}.labor .output{fill:currentColor;font-size:18px;font-weight:700}
+  </style>
+  <g class="labor">
+    <text x="30" y="38" class="label">Complementary mixers in Kimi K3</text><text x="30" y="64" class="body">One pathway maintains a fixed-size recurrent memory; the other performs compressed global attention.</text>
+    <rect class="card" x="30" y="98" width="360" height="264" rx="16"/>
+    <circle class="teal" cx="62" cy="132" r="9"/><text class="name" x="82" y="140">KDA</text><text class="body" x="62" y="171">A recurrent associative memory</text>
+    <rect class="pill" x="62" y="198" width="126" height="34" rx="17"/><text class="pilltext" x="83" y="220">WHERE / WHEN</text>
+    <text class="math" x="62" y="262">Sₜ ← decay(Sₜ₋₁) + delta write</text><text class="body" x="62" y="292">Carries token-order effects forward</text><text class="body" x="62" y="316">without a growing KV cache.</text>
+    <line class="wire" x1="86" y1="338" x2="330" y2="338"/><circle class="teal" cx="86" cy="338" r="5"/><circle class="teal" cx="147" cy="338" r="5"/><circle class="teal" cx="208" cy="338" r="5"/><circle class="teal" cx="269" cy="338" r="5"/><circle class="teal" cx="330" cy="338" r="5"/>
+    <rect class="card" x="470" y="98" width="360" height="264" rx="16"/>
+    <circle class="indigo" cx="502" cy="132" r="9"/><text class="name" x="522" y="140">Gated MLA</text><text class="body" x="502" y="171">Compressed global attention</text>
+    <rect class="pill" x="502" y="198" width="92" height="34" rx="17"/><text class="pilltext" x="523" y="220">WHAT</text>
+    <text class="math" x="502" y="262">cᴷⱽ → reconstructed K, V</text><text class="body" x="502" y="292">Recalls content across the context</text><text class="body" x="502" y="316">from a compact per-token latent.</text>
+    <rect x="502" y="329" width="40" height="18" rx="3" fill="#3B3486" fill-opacity=".25"/><rect x="550" y="321" width="40" height="26" rx="3" fill="#3B3486" fill-opacity=".4"/><rect x="598" y="312" width="40" height="35" rx="3" fill="#3B3486" fill-opacity=".58"/><rect x="646" y="323" width="40" height="24" rx="3" fill="#3B3486" fill-opacity=".4"/><rect x="694" y="304" width="40" height="43" rx="3" fill="#3B3486" fill-opacity=".72"/>
+    <path class="wire" d="M210 362V373H416"/><path class="wire" d="M650 362V373H444"/>
+    <rect x="354" y="385" width="152" height="48" rx="24" fill="#E0912B" fill-opacity=".18" stroke="#E0912B" stroke-width="1.5"/><text class="output" x="377" y="415" font-size="16">gated output</text>
+    <text class="body" x="310" y="447">Kimi K3 interleaves 3 KDA layers for every 1 Gated MLA layer.</text>
+  </g>
+</svg>
