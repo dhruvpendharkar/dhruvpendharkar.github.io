@@ -54,9 +54,9 @@ and the paired observation (readout) equation, which produces the layer's ungate
 
 $$\tilde{\mathbf{o}}_t = \mathbf{S}_t^\top \mathbf{q}_t$$
 
-In this equation, I think its important to decompose the various affine components in order to not only understand their individual purpose, but also the progression of linear attention architectures. First we consider the shrinkage component $\operatorname{Diag}(\boldsymbol{\alpha}_t)$ which serves a simple purpose in decaying the previous state’s contribution to the current state. We use this to reduce the correlation of state tensors and allow for the memory writes at token t to be fairly represented.
+In this equation, I think its important to decompose the various affine components in order to not only understand their individual purpose, but also the progression of linear attention architectures. First we consider the shrinkage component <span>\(\operatorname{Diag}(\boldsymbol{\alpha}_t)\)</span> which serves a simple purpose in decaying the previous state’s contribution to the current state. We use this to reduce the correlation of state tensors and allow for the memory writes at token t to be fairly represented.
 
-Now the delta component<sup>10</sup>: $\left(\mathbf{I} - \beta_t\,\mathbf{k}_t \mathbf{k}_t^\top\right)$ which at face value to me seems to be more of the same. After all, the sight of transforming $\operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1}$ seems like its continuing to reduce the “impact” of the previous state on the current one. However, to better understand the role of this component we can look at the following equivalent equation:
+Now the delta component<sup>10</sup>: <span>\(\left(\mathbf{I} - \beta_t\,\mathbf{k}_t \mathbf{k}_t^\top\right)\)</span> which at face value to me seems to be more of the same. After all, the sight of transforming <span>\(\operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1}\)</span> seems like its continuing to reduce the “impact” of the previous state on the current one. However, to better understand the role of this component we can look at the following equivalent equation:
 
 $$\mathbf{S}_t = \operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1} \;+\; \beta_t\,\mathbf{k}_t\left(\mathbf{v}_t - \big(\operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1}\big)^{\!\top}\mathbf{k}_t\right)^{\!\top}$$
 
@@ -68,11 +68,11 @@ which we can find the gradient of with some simple calculus:
 
 $$\nabla_{\mathbf{S}}\,\mathcal{L}_t = \mathbf{k}_t\left(\mathbf{S}^\top \mathbf{k}_t - \mathbf{v}_t\right)^{\!\top}$$
 
-Taking a single gradient-descent step of size $\beta_t$ from the decayed state $\operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1}$ then recovers exactly the rewritten update above:
+Taking a single gradient-descent step of size <span>\(\beta_t\)</span> from the decayed state <span>\(\operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1}\)</span> then recovers exactly the rewritten update above:
 
 $$\mathbf{S}_t = \operatorname{Diag}(\boldsymbol{\alpha}_t)\,\mathbf{S}_{t-1} - \beta_t\,\nabla_{\mathbf{S}}\,\mathcal{L}_t$$
 
-We can now see that the update rule looks like our old friend gradient descent, and this provides the power of the delta update. We can imagine this update as getting our current $\mathbf{S}_t$ to be taking a decayed version of the previous state $\mathbf{S}_{t-1}$ and updating it towards being a “better” operator for approximating $\mathbf{v}_t$. Based on how strong our $\beta_t$ is, our memory write for $\mathbf{S}_t$ steers the information in memory more towards associative recall.
+We can now see that the update rule looks like our old friend gradient descent, and this provides the power of the delta update. We can imagine this update as getting our current <span>\(\mathbf{S}_t\)</span> to be taking a decayed version of the previous state <span>\(\mathbf{S}_{t-1}\)</span> and updating it towards being a “better” operator for approximating <span>\(\mathbf{v}_t\)</span>. Based on how strong our <span>\(\beta_t\)</span> is, our memory write for <span>\(\mathbf{S}_t\)</span> steers the information in memory more towards associative recall.
 
 <!-- VIZ:kda-memory -->
 <figure class="viz">
@@ -83,11 +83,11 @@ We can now see that the update rule looks like our old friend gradient descent, 
   <figcaption>The KDA state, edited one token at a time — forget, delete, write, read. Token 3 reuses token 1's key, so watch the delete step scrub the old value before the new one is written.</figcaption>
 </figure>
 
-One of the small tweaks the Kimi team made to improve KDA was to also introduce a lower bound on $\boldsymbol{\alpha}_t$.
+One of the small tweaks the Kimi team made to improve KDA was to also introduce a lower bound on <span>\(\boldsymbol{\alpha}_t\)</span>.
 
 $$g_t = g_{\min}\,\operatorname{Sigmoid}\!\left(e^{A_h}\,z_t\right) \in (g_{\min},\,0), \qquad \boldsymbol{\alpha}_t = \exp(g_t) \in \big(e^{g_{\min}},\,1\big)$$
 
-The introduction of the $g_{\min}$ term allows for a limit on the amount of decay applied, and this provides an example of an architectural innovation more driven by hardware constraints than pure algorithmic improvement. The chosen $g_{\min}$ of -5 ensures that the log decay over a single token change is bounded below at $-5$, so the per-step retention $\boldsymbol{\alpha}_t$ stays above $e^{-5}$; accumulated over a 16-token tile the log decay stays above $-80$, i.e. the cumulative retention stays above $e^{-80}$. A problem with unbounded log decay is that since it grows with token position (recall our states here are built recurrently), we get tiny multiplications that result in very small numbers which require very high precision to track.
+The introduction of the <span>\(g_{\min}\)</span> term allows for a limit on the amount of decay applied, and this provides an example of an architectural innovation more driven by hardware constraints than pure algorithmic improvement. The chosen <span>\(g_{\min}\)</span> of -5 ensures that the log decay over a single token change is bounded below at <span>\(-5\)</span>, so the per-step retention <span>\(\boldsymbol{\alpha}_t\)</span> stays above <span>\(e^{-5}\)</span>; accumulated over a 16-token tile the log decay stays above <span>\(-80\)</span>, i.e. the cumulative retention stays above <span>\(e^{-80}\)</span>. A problem with unbounded log decay is that since it grows with token position (recall our states here are built recurrently), we get tiny multiplications that result in very small numbers which require very high precision to track.
 
 Kimi Linear<sup>6</sup> attempted to solve this problem by using 16 token increments as “tiles” in which relative log decay could be calculated, but even with this optimization explicit tensor multiplication calculations are required. With the new bounding, the decay is guaranteed to stay within what is known as the “bf16 dynamic range”. The dynamic range corresponds to values that the bf16 format can represent losslessly, and since decays all are within the dynamic range the Kimi team was able to entirely implement the related operations as efficient TensorCore matrix multiplications which operate on “blocks” of data as opposed to acting on individual positions.
 
@@ -101,15 +101,13 @@ The final output
 
 $$\mathbf{y}_t = \mathbf{W}_o\left[\operatorname{Sigmoid}(\mathbf{W}_g\,\mathbf{x}_t) \odot \operatorname{RMSNorm}(\tilde{\mathbf{o}}_t)\right]$$
 
-utilizes a gating weight $\mathbf{W}_g$ which improves expressiveness and can counteract attention sinks<sup>11</sup>. One of the unique parts of KDA which also helps explain the use of NoPE in Kimi K3 is that it enables implicit encoding of positional information. Fundamentally each $\mathbf{S}_t$ is a function of previous token states and as such it allows for positional information and relationships to be retained.
+utilizes a gating weight <span>\(\mathbf{W}_g\)</span> which improves expressiveness and can counteract attention sinks<sup>11</sup>. One of the unique parts of KDA which also helps explain the use of NoPE in Kimi K3 is that it enables implicit encoding of positional information. Fundamentally each <span>\(\mathbf{S}_t\)</span> is a function of previous token states and as such it allows for positional information and relationships to be retained.
 
 ## gated multi-head latent attention
 
 To compliment the linear attention from KDA, the K3 recipe also includes global attention layers in the form of Gated Multi-Head Latent Attention. The name is a mouthful but we can start with the general problem that the researchers hoped to solve using Gated MLA. For long context agentic tasks (what models like Kimi K3 are designed to support), the KV cache grows large, and this creates a massive memory bottleneck.
 
-Compression along the sequence dimension is not really a feasible option in this case. Sequence length will always vary and as such any sort of compression (read: matrix multiplication) would need operators with a variable sized dimension. A far more within reach method is to compress the keys and values themselves on a per-token basis, and this is the core idea that lead to MLA in Deepseek-V2<sup>7</sup>.
-
-The MLA equations bring in several new symbols, and since the caches and attention are formed per head, it's worth fixing the indexing first:
+For clarity here is a new appendix for the variables and terms used:
 
 | Symbol | Meaning |
 | --- | --- |
@@ -124,6 +122,8 @@ The MLA equations bring in several new symbols, and since the caches and attenti
 | $\bar{\mathbf{o}}_{t,i}$ | per-head attention output; concatenated to $\bar{\mathbf{o}}_t = [\bar{\mathbf{o}}_{t,1};\dots;\bar{\mathbf{o}}_{t,n_h}]$ |
 | $\tau \le t$ | past and current token positions attended over |
 | $\mathbf{W}_g,\ \mathbf{W}_o$ | input-dependent gate and output projections |
+
+Compression along the sequence dimension is not really a feasible option in this case. Sequence length will always vary and as such any sort of compression (read: matrix multiplication) would need operators with a variable sized dimension. A far more within reach method is to compress the keys and values themselves on a per-token basis, and this is the core idea that lead to MLA in Deepseek-V2<sup>7</sup>.
 
 $$\mathbf{c}^{KV}_t = \mathbf{W}^{DKV}\mathbf{x}_t \in \mathbb{R}^{d_c}, \qquad \mathbf{k}^{C}_t = \mathbf{W}^{UK}\mathbf{c}^{KV}_t \in \mathbb{R}^{n_h d_h}, \qquad \mathbf{v}^{C}_t = \mathbf{W}^{UV}\mathbf{c}^{KV}_t \in \mathbb{R}^{n_h d_h^v}$$
 
@@ -170,16 +170,16 @@ The attention recipe used to create Kimi provided me a great opportunity to rein
 
 ## references
 
-1. [Kimi K3: Open Frontier Intelligence](https://arxiv.org/pdf/2607.24653) — Moonshot AI / Kimi Team (2026).
-2. [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — Vaswani et al. (2017).
-3. [Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention](https://arxiv.org/abs/2006.16236) — Katharopoulos et al. (2020).
-4. [GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints](https://arxiv.org/abs/2305.13245) — Ainslie et al. (2023).
-5. [MiniMax-M1](https://arxiv.org/abs/2506.13585) — MiniMax (2025).
-6. [Kimi Linear: An Expressive, Efficient Attention Architecture](https://arxiv.org/abs/2510.26692) — Kimi Team (2025).
-7. [DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model](https://arxiv.org/abs/2405.04434) — DeepSeek-AI (2024).
-8. [Attention Residuals](https://arxiv.org/abs/2603.15031) — Kimi Team (2026).
-9. [Mamba: Linear-Time Sequence Modeling with Selective State Spaces](https://arxiv.org/abs/2312.00752) — Gu & Dao (2023); see also Mamba-2, Dao & Gu (2024).
-10. [Parallelizing Linear Transformers with the Delta Rule over Sequence Length](https://arxiv.org/abs/2406.06484) — Yang et al. (2024).
-11. [Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free](https://arxiv.org/abs/2505.06708) — Qiu et al. (2025).
-12. [Hyper-Connections](https://arxiv.org/abs/2409.19606) — Zhu et al. (2024).
-13. [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) — He et al. (2015).
+1.  [Kimi K3: Open Frontier Intelligence](https://arxiv.org/pdf/2607.24653) — Moonshot AI / Kimi Team (2026).
+2.  [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — Vaswani et al. (2017).
+3.  [Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention](https://arxiv.org/abs/2006.16236) — Katharopoulos et al. (2020).
+4.  [GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints](https://arxiv.org/abs/2305.13245) — Ainslie et al. (2023).
+5.  [MiniMax-M1](https://arxiv.org/abs/2506.13585) — MiniMax (2025).
+6.  [Kimi Linear: An Expressive, Efficient Attention Architecture](https://arxiv.org/abs/2510.26692) — Kimi Team (2025).
+7.  [DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model](https://arxiv.org/abs/2405.04434) — DeepSeek-AI (2024).
+8.  [Attention Residuals](https://arxiv.org/abs/2603.15031) — Kimi Team (2026).
+9.  [Mamba: Linear-Time Sequence Modeling with Selective State Spaces](https://arxiv.org/abs/2312.00752) — Gu & Dao (2023); see also Mamba-2, Dao & Gu (2024).
+10.  [Parallelizing Linear Transformers with the Delta Rule over Sequence Length](https://arxiv.org/abs/2406.06484) — Yang et al. (2024).
+11.  [Gated Attention for Large Language Models: Non-linearity, Sparsity, and Attention-Sink-Free](https://arxiv.org/abs/2505.06708) — Qiu et al. (2025).
+12.  [Hyper-Connections](https://arxiv.org/abs/2409.19606) — Zhu et al. (2024).
+13.  [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) — He et al. (2015).
