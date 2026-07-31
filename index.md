@@ -14,6 +14,10 @@ outside of machine learning i enjoy weightlifting, writing, djing, and basketbal
 
 my interests tend to change over time but i am currently most excited about improving visual reasoning capabilities in vlms and developing causal approaches for interpreting language models
 
+## Engineering Interests
+
+i also like to work on engineering stuff. right now i'm interested in scalable reinforcement learning and improving agentic harnesses.
+
 ## Contact Information
 
 you can reach me at dhruvpendharkar@berkeley.edu
