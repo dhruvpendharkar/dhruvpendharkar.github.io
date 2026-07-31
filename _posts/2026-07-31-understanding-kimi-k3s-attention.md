@@ -1,14 +1,14 @@
 ---
 layout: post
-title: "Understanding Kimi K3's Attention"
+title: "understanding kimi k3's attention"
 date: 2026-07-31
 ---
 
-## Introduction
+## introduction
 
 The release of Kimi K3 has made waves in the ML community and the media (for reasons beyond just the model itself of course). However, amidst this discourse, we perhaps miss out on the, for lack of better word, coolness of Kimi and it’s design. When reading the newly released tech report from Moonshot AI<sup>1</sup>, I was particularly drawn to the unique choices with regards to attention mechanisms that are utilized to make K3 a frontier level model with up to 1M tokens of context. In this post I’ll dive into the multiple innovations and tricks used by the Kimi team specifically with respect to attention.
 
-## Context of Attention Variants
+## some context on attention variants
 
 To start I think it's important to understand what recent trends in open models have led up to the architecture we see in Kimi K3. 
 
@@ -22,7 +22,7 @@ K3 follows a newer trend in frontier open models, starting from MiniMax’s M1 w
   <figcaption>Attention-variant lineage: two efficient attention tracks converge in K3's hybrid recipe.</figcaption>
 </figure>
 
-## KDA
+## kimi delta attention
 
 Kimi Delta Attention was a big motivator for me to make this post. It’s certainly not instantly intuitive at least not to a mere mortal like myself, but digging into the linear algebra we can see how powerful it is as the primary attention utilized in K3. KDA is a SSM-style attention calculation so it is helpful to liken it to Mamba<sup>9</sup>, where we have a state equation and observation equation and each is updated at each time step of recurrence. 
 
@@ -103,7 +103,7 @@ $$\mathbf{y}_t = \mathbf{W}_o\left[\operatorname{Sigmoid}(\mathbf{W}_g\,\mathbf{
 
 utilizes a gating weight $\mathbf{W}_g$ which improves expressiveness and can counteract attention sinks<sup>11</sup>. One of the unique parts of KDA which also helps explain the use of NoPE in Kimi K3 is that it enables implicit encoding of positional information. Fundamentally each $\mathbf{S}_t$ is a function of previous token states and as such it allows for positional information and relationships to be retained.
 
-## Gated MLA
+## gated multi-head latent attention
 
 To compliment the linear attention from KDA, the K3 recipe also includes global attention layers in the form of Gated Multi-Head Latent Attention. The name is a mouthful but we can start with the general problem that the researchers hoped to solve using Gated MLA. For long context agentic tasks (what models like Kimi K3 are designed to support), the KV cache grows large, and this creates a massive memory bottleneck.
 
@@ -152,7 +152,7 @@ Output gating is used liberally throughout the Kimi K3 attention variants, and t
   <figcaption>KDA carries where and when information occurs; Gated MLA retrieves what is relevant across the context.</figcaption>
 </figure>
 
-## Attention Residuals
+## attention residuals
 
 The Kimi team also uses a unique residual connection method (of course reinforcing that at the end of the day everything really is just ResNet<sup>13</sup>). The formulation here takes on residual connections at the attention level and uses the familiar Q-K-V trio as a means of controlling the residual information that is passed.
 
@@ -164,11 +164,11 @@ $$\alpha_{i\to l} = \frac{\phi(\mathbf{q}_l,\ \mathbf{k}_i)}{\sum_{j=0}^{l-1}\ph
 
 I like to think of the value of $\alpha_{i\to l}$ for each given i as the fractional “learned importance” of the corresponding layer and we see that this importance is used to weight the contribution of each layer’s values in the input to the current layer. This adds the dimension of “attention over layers” which is certainly a compelling narrative although even considering it simply as a learned residual connection method like Deepseek’s “hyperconnections”<sup>12</sup> the value add is clear.
 
-## Wrapping up
+## wrapping up
 
 The attention recipe used to create Kimi provided me a great opportunity to reinforce my own understanding of different attention variants as well as the different ways in which architecture can be optimized and co-designed with the model’s intended use as well as the the way in which it is trained. I hope this post is helpful to you and of course all credit goes to the Kimi team for both an incredible effort in frontier level open models as well as one of the clearest and most insightful technical reports I’ve gotten to read.
 
-## References
+## references
 
 1. [Kimi K3: Open Frontier Intelligence](https://arxiv.org/pdf/2607.24653) — Moonshot AI / Kimi Team (2026).
 2. [Attention Is All You Need](https://arxiv.org/abs/1706.03762) — Vaswani et al. (2017).
