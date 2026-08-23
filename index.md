@@ -8,7 +8,7 @@ layout: default
 
 hi i'm dhruv, a fourth year undergraduate student at uc berkeley. i am a researcher in trevor darrell's group within berkeley artificial intelligence research lab (bair). my current work lies in post-training for computer use agents as well multi-agent red teaming. 
 
-previously i have been fortunate to work on ml infrat at amazon, recommendation systems at sephora, and ml for visual neuroscience as part of the active vision and neural computation lab at berkeley.
+previously i have been fortunate to work on ml infra at amazon, recommendation systems at sephora, and ml for visual neuroscience as part of the active vision and neural computation lab at berkeley.
 
 outside of machine learning i enjoy weightlifting, writing, djing, and basketball.
 
