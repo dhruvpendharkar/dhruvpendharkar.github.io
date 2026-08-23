@@ -6,17 +6,15 @@ layout: default
 
 <img class="profile-picture" src="IMG_0246.jpg">
 
-hi i'm dhruv, a third year undergraduate student at uc berkeley. i am an undergraduate researcher in trevor darrell's group within berkeley artificial intelligence research lab (bair). my current work lies in inference aligned training for visual reasoning as well as post-training for web agents. previously i have been fortunate to work on recommendation systems at sephora and ml for visual neuroscience as part of the active vision and neural computation lab at berkeley.
+hi i'm dhruv, a fourth year undergraduate student at uc berkeley. i am a researcher in trevor darrell's group within berkeley artificial intelligence research lab (bair). my current work lies in post-training for computer use agents as well multi-agent red teaming. 
+
+previously i have been fortunate to work on ml infrat at amazon, recommendation systems at sephora, and ml for visual neuroscience as part of the active vision and neural computation lab at berkeley.
 
 outside of machine learning i enjoy weightlifting, writing, djing, and basketball.
 
 ## Research Interests
 
-my interests tend to change over time but i am currently most excited about improving visual reasoning capabilities in vlms and developing causal approaches for interpreting language models
-
-## Engineering Interests
-
-i also like to work on engineering stuff. right now i'm interested in scalable reinforcement learning and improving agentic harnesses.
+my interests tend to change over time but i am currently most excited about creating generalizable behaviors in language models through games and understanding model internals through causal methods.
 
 ## Contact Information
 
