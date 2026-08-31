@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Discriminative World Models for Web Agents — a representation-agnostic approach to world modeling through predicted-state matching.">
+  <meta name="theme-color" content="#0f172a">
+  <meta property="og:title" content="Discriminative World Models for Web Agents">
+  <meta property="og:description" content="Training web world models to preserve the action-relevant differences needed for downstream decision making.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://dhruvpendharkar.github.io/dwm/assets/qualitative.png">
+  <title>Discriminative World Models for Web Agents</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23111d3d'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia' font-size='21' font-style='italic' fill='white'%3ED%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="wordmark" href="#top" aria-label="Discriminative World Models home">
+      <span class="wordmark-mark" aria-hidden="true">D</span>
+      <span>DWM<span class="wordmark-light"> for Web Agents</span></span>
+    </a>
+    <nav aria-label="Page sections">
+      <a href="#abstract">Abstract</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#citation">Citation</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <p class="eyebrow"><span></span> Web agents · World models · 2026</p>
+        <h1>Discriminative World Models<br><em>for Web Agents</em></h1>
+
+        <p class="authors" aria-label="Paper authors">
+          <span>Kelvin Li<sup>*</sup></span>
+          <span class="author-feature">Dhruv Pendharkar<sup>*</sup></span>
+          <span>Anish Pahilajani</span>
+          <span>Chuyi Shang</span>
+          <span>Leon Oks</span>
+          <span>Leonid Karlinsky</span>
+          <span>Rogerio Feris</span>
+          <span>Trevor Darrell</span>
+          <span>Roei Herzig</span>
+        </p>
+
+        <p class="affiliations">
+          UC Berkeley &nbsp;·&nbsp; MIT-IBM Watson AI Lab &nbsp;·&nbsp; Cal Poly San Luis Obispo &nbsp;·&nbsp; Xero<br>
+          <small><sup>*</sup> Equal contribution</small>
+        </p>
+
+        <p class="hero-deck">World models should predict what helps an agent <strong>choose</strong>—not simply what is easiest to reconstruct.</p>
+
+        <div class="actions" aria-label="Project resources">
+          <span class="button button-muted" aria-disabled="true" title="Paper will be released soon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l4 4v16H6zM14 2v5h5M9 13h6M9 17h6M9 9h2"/></svg>
+            Paper · Coming soon
+          </span>
+          <span class="button button-muted" aria-disabled="true" title="Code will be released soon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/></svg>
+            Code · Coming soon
+          </span>
+          <span class="button button-muted" aria-disabled="true" title="Data will be released soon">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v6c0 1.7 3.1 3 7 3s7-1.3 7-3V5M5 11v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg>
+            Data · Coming soon
+          </span>
+        </div>
+      </div>
+
+      <figure class="hero-figure figure-frame">
+        <img src="assets/qualitative.png" alt="Qualitative comparison on a WebArena Reddit page. The proposed method correctly predicts that a combobox expands while two baselines fail to describe the action-induced change." fetchpriority="high">
+        <figcaption><strong>Say what changed.</strong> Our model captures the specific outcome of the queried action, while prior approaches predict a different action or repeat page structure that remains unchanged.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section section-narrow" id="abstract">
+      <div class="section-kicker">01 · Motivation</div>
+      <h2>Abstract</h2>
+      <p class="abstract-text">Recent web agents use world models for test-time action selection by sampling candidate actions, predicting the resulting web states, and ranking them with a ranker model or a Process Reward Model (PRM). These world models are typically trained via supervised next-state prediction to generate fixed representations like HTML or AXTree snapshots. However, this objective is misaligned with the downstream ranker, which relies on predicted states being discriminative across candidates to accurately score them. To address this, we introduce <strong>predicted-state matching</strong>, a training objective where the predicted representation must distinguish the true resulting state from those reached by alternative actions. We train these models using a branching web-agent dataset derived from WebArena Go-Browse trajectories, where every decision point contains multiple alternative actions and their resulting states. Experiments on our held-out predicted-state-matching benchmark show that our approach outperforms world models trained with supervised next-state prediction. We further show that our approach improves PRM-style action ranking on WebPRMBench compared with action-only PRMs and PRMs augmented with supervised-next-state world models. Finally, on WebArena-Lite, using our world model for test-time action selection improves end-to-end task success.</p>
+
+      <div class="results-strip" aria-label="Key results">
+        <div>
+          <span class="metric">80.80<small>%</small></span>
+          <span class="metric-label">State-matching accuracy</span>
+        </div>
+        <div>
+          <span class="metric">+16.90</span>
+          <span class="metric-label">Best-of-N points vs. direct PRM</span>
+        </div>
+        <div>
+          <span class="metric">28.48<small>%</small></span>
+          <span class="metric-label">WebArena-Lite success</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="method">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">02 · Approach</div>
+          <h2>Train for the decision<br>the model must support.</h2>
+        </div>
+        <p>Standard world models learn to imitate a fixed state format. Predicted-state matching instead rewards a representation when it makes the queried action’s true outcome distinguishable from alternative outcomes.</p>
+      </div>
+
+      <figure class="figure-frame figure-large">
+        <img src="assets/wm_overview.png" alt="Comparison between supervised next-state prediction and predicted-state matching. The proposed method uses a judge to compare the target and a negative state.">
+        <figcaption><strong>From reconstruction to discrimination.</strong> The matching judge never sees the instruction, history, current state, or action; the generated representation itself must identify the correct resulting state.</figcaption>
+      </figure>
+
+      <div class="steps" aria-label="Method stages">
+        <article>
+          <span class="step-number">1</span>
+          <h3>Branch the data</h3>
+          <p>Merge repeated browser states across Go-Browse trajectories into a graph with multiple executable actions and observed outcomes.</p>
+        </article>
+        <article>
+          <span class="step-number">2</span>
+          <h3>Predict the consequence</h3>
+          <p>Given the task, history, current accessibility tree, and queried action, the world model generates a flexible textual state representation.</p>
+        </article>
+        <article>
+          <span class="step-number">3</span>
+          <h3>Match, don’t imitate</h3>
+          <p>A judge must match the representation to the true next state over an alternative state reached by a competing action.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section-tinted" id="data">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">03 · Branching data</div>
+          <h2>One state.<br>Multiple futures.</h2>
+        </div>
+        <p>Linear trajectories hide the counterfactuals an agent needs for local decision making. Our state-action graph exposes them: <strong>7,730</strong> branching decision points from <strong>2,839</strong> trajectories yield <strong>30,920</strong> pairwise examples.</p>
+      </div>
+      <figure class="figure-frame figure-large">
+        <img src="assets/dataset.png" alt="Construction of a branching state-action graph from repeated states in linear trajectories, followed by target and negative state matching.">
+        <figcaption>Repeated states are merged into a state-action graph. Each outgoing action provides a true next state for one query and a hard negative for another.</figcaption>
+      </figure>
+    </section>
+
+    <section class="section" id="results">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">04 · Results</div>
+          <h2>More discriminative.<br>More useful.</h2>
+        </div>
+        <p>Predicted-state matching improves both the intrinsic quality of world-model representations and the downstream decisions made from them.</p>
+      </div>
+
+      <article class="result-block">
+        <div class="result-copy">
+          <span class="result-index">A</span>
+          <div>
+            <h3>Held-out predicted-state matching</h3>
+            <p>Our Qwen3-8B model achieves the strongest overall matching accuracy, outperforming existing web world models and the data-matched supervised full-AXTree baseline.</p>
+          </div>
+        </div>
+        <div class="table-wrap" tabindex="0" aria-label="Scrollable predicted-state matching results table">
+          <table>
+            <caption>Predicted-state-matching accuracy (%) using Qwen3-32B as the matching judge. Overall is micro-averaged.</caption>
+            <thead>
+              <tr><th scope="col">Model</th><th scope="col">Shopping</th><th scope="col">CMS</th><th scope="col">Reddit</th><th scope="col">GitLab</th><th scope="col">Map</th><th scope="col">Overall</th></tr>
+            </thead>
+            <tbody>
+              <tr class="group-row"><th colspan="7" scope="rowgroup">General language models</th></tr>
+              <tr><th scope="row">GPT-4o</th><td>44.44</td><td>47.80</td><td>48.22</td><td>47.00</td><td>55.81</td><td>49.40</td></tr>
+              <tr><th scope="row">GPT-4o-mini</th><td>48.15</td><td>46.70</td><td>47.72</td><td>47.00</td><td>53.49</td><td>48.80</td></tr>
+              <tr><th scope="row">Qwen3-4B</th><td>59.26</td><td>54.95</td><td>52.79</td><td>52.00</td><td>53.95</td><td>53.94</td></tr>
+              <tr><th scope="row">Qwen3-8B</th><td>67.90</td><td>55.50</td><td>68.00</td><td>56.50</td><td>68.30</td><td>62.86</td></tr>
+              <tr class="group-row"><th colspan="7" scope="rowgroup">Existing world models</th></tr>
+              <tr><th scope="row">WebDreamer-7B</th><td>72.80</td><td>70.80</td><td>75.63</td><td>75.00</td><td>76.70</td><td>74.51</td></tr>
+              <tr><th scope="row">WebWorld-8B</th><td>79.01</td><td>67.58</td><td>77.66</td><td>54.00</td><td>77.21</td><td>70.17</td></tr>
+              <tr class="group-row"><th colspan="7" scope="rowgroup">Data-matched SFT baseline</th></tr>
+              <tr><th scope="row">Full AXTree target</th><td>45.68</td><td>46.15</td><td>47.72</td><td>46.00</td><td>51.63</td><td>47.77</td></tr>
+              <tr class="ours-row"><th scope="row">Predicted-state matching <span>Ours</span></th><td>77.78</td><td>77.47</td><td>79.70</td><td>82.50</td><td>84.19</td><td><strong>80.80</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="result-block">
+        <div class="result-copy">
+          <span class="result-index">B</span>
+          <div>
+            <h3>WebPRMBench action ranking</h3>
+            <p>Under the same Qwen2.5-7B reward-model backbone and answer-only SFT setup, our state representations improve the controlled Best-of-N average by 16.90 points over direct action ranking.</p>
+          </div>
+        </div>
+        <div class="table-wrap" tabindex="0" aria-label="Scrollable WebPRMBench results table">
+          <table class="dense-table">
+            <caption>Controlled Qwen2.5-7B reward models on WebPRMBench. Pair = Pairwise accuracy; BoN = Best-of-N accuracy.</caption>
+            <thead>
+              <tr>
+                <th scope="col" rowspan="2">Model</th>
+                <th scope="colgroup" colspan="2">Mind2Web</th><th scope="colgroup" colspan="2">WebArena</th><th scope="colgroup" colspan="2">AssistantBench</th><th scope="colgroup" colspan="2">WorkArena</th><th scope="colgroup" colspan="2">Average</th>
+              </tr>
+              <tr><th>Pair</th><th>BoN</th><th>Pair</th><th>BoN</th><th>Pair</th><th>BoN</th><th>Pair</th><th>BoN</th><th>Pair</th><th>BoN</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Direct (no state)</th><td>85.14</td><td>60.91</td><td>80.85</td><td>52.73</td><td>82.50</td><td>56.67</td><td>79.57</td><td>52.88</td><td>82.02</td><td>55.80</td></tr>
+              <tr><th scope="row">+ WebWorld-8B states</th><td>89.74</td><td>73.20</td><td>84.32</td><td>65.60</td><td>86.66</td><td>67.41</td><td>81.21</td><td>64.32</td><td>85.48</td><td>67.63</td></tr>
+              <tr class="ours-row"><th scope="row">+ State-matching states <span>Ours</span></th><td>96.71</td><td>89.39</td><td>88.56</td><td>69.15</td><td>88.33</td><td>70.00</td><td>83.84</td><td>62.26</td><td><strong>89.36</strong></td><td><strong>72.70</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="result-block end-to-end">
+        <div class="result-copy">
+          <span class="result-index">C</span>
+          <div>
+            <h3>End-to-end WebArena-Lite</h3>
+            <p>Adding predicted state representations to Best-of-5 action selection more than doubles GPT-4o ReAct-style task success in the same evaluation harness.</p>
+          </div>
+        </div>
+        <div class="bar-chart" role="img" aria-label="WebArena-Lite task success: ReAct-style 13.94 percent, Best-of-5 21.82 percent, Best-of-5 plus state matching 28.48 percent">
+          <div class="bar-row">
+            <span class="bar-label">ReAct-style</span>
+            <div class="bar-track"><span class="bar" style="--score: 46.47%"></span></div>
+            <strong>13.94%</strong>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Best-of-5</span>
+            <div class="bar-track"><span class="bar" style="--score: 72.73%"></span></div>
+            <strong>21.82%</strong>
+          </div>
+          <div class="bar-row ours-bar">
+            <span class="bar-label">Best-of-5 + state matching</span>
+            <div class="bar-track"><span class="bar" style="--score: 94.93%"></span></div>
+            <strong>28.48%</strong>
+          </div>
+          <p class="chart-note">Task success on WebArena-Lite · scale shown to 30%</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="section section-tinted" id="qualitative">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">05 · Qualitative example</div>
+          <h2>Say what changed.</h2>
+        </div>
+        <p>When a combobox is clicked, our model names the exact consequence: the menu expands and displays available forums. Fixed-format or supervised baselines either predict the wrong action or repeat irrelevant page structure.</p>
+      </div>
+      <div class="state-pair">
+        <figure>
+          <span class="state-label">Current state</span>
+          <img src="assets/reddit_state.png" alt="Reddit submission page with the forum dropdown closed and highlighted.">
+        </figure>
+        <div class="state-arrow" aria-hidden="true">→</div>
+        <figure>
+          <span class="state-label state-label-next">Resulting state</span>
+          <img src="assets/reddit_next.png" alt="Reddit submission page after the forum dropdown has expanded to show options.">
+        </figure>
+      </div>
+    </section>
+
+    <section class="takeaway">
+      <p class="section-kicker">Takeaway</p>
+      <blockquote>Optimize world models to preserve the <em>action-relevant differences</em> needed for downstream decisions—not to reproduce a predefined representation of the next state.</blockquote>
+    </section>
+
+    <section class="section citation-section" id="citation">
+      <div class="citation-heading">
+        <div>
+          <div class="section-kicker">06 · Cite</div>
+          <h2>Citation</h2>
+        </div>
+        <button class="copy-button" type="button" data-copy-target="bibtex" aria-live="polite">Copy BibTeX</button>
+      </div>
+      <pre id="bibtex"><code>@article{li2026discriminative,
+  title   = {Discriminative World Models for Web Agents},
+  author  = {Li, Kelvin and Pendharkar, Dhruv and Pahilajani, Anish and
+             Shang, Chuyi and Oks, Leon and Karlinsky, Leonid and
+             Feris, Rogerio and Darrell, Trevor and Herzig, Roei},
+  year    = {2026}
+}</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Discriminative World Models for Web Agents · 2026</p>
+    <p><a href="/">Dhruv Pendharkar</a> · <a href="#top">Back to top ↑</a></p>
+  </footer>
+
+  <script>
+    const copyButton = document.querySelector('[data-copy-target="bibtex"]');
+    copyButton.addEventListener('click', async () => {
+      const citation = document.querySelector('#bibtex code').textContent;
+      try {
+        await navigator.clipboard.writeText(citation);
+        copyButton.textContent = 'Copied';
+        setTimeout(() => { copyButton.textContent = 'Copy BibTeX'; }, 1600);
+      } catch (error) {
+        copyButton.textContent = 'Select & copy';
+        window.getSelection().selectAllChildren(document.querySelector('#bibtex code'));
+      }
+    });
+  </script>
+</body>
+</html>
